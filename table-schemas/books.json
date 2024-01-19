@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "id": "books",
+  "name": "books",
+  "endpointBasePath": "/books",
+  "schema": {
+    "type": "object",
+    "required": [
+      "ID",
+      "TITLE",
+      "AUTHOR"
+    ],
+    "properties": {
+      "ID": {
+        "type": "number"
+      },
+      "TITLE": {
+        "type": "string",
+        "description": "The name of the book"
+      },
+      "AUTHOR": {
+        "type": "string",
+        "description": "The author of the book"
+      },
+      "PRICE": {
+        "type": "number"
+      },
+      "PUBLISHED": {
+        "type": "boolean"
+      },
+      "SALESFORECAST": {
+        "type": "number"
+      },
+      "LANGUAGE": {
+        "type": "string",
+        "description": "The language of the book"
+      },
+      "RELEASEDATE": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "RELEASEPRICE": {
+        "type": "decimal"
+      },
+      "CREATORID": {
+        "type": "string",
+        "description": "User id that has created this object"
+      },
+      "CREATEDAT": {
+        "type": "Date",
+        "description": "Date of the request that has performed the object creation"
+      },
+      "UPDATERID": {
+        "type": "string",
+        "description": "User id that has requested the last change successfully"
+      },
+      "UPDATEDAT": {
+        "type": "Date",
+        "description": "Date of the request that has performed the last change"
+      }
+    }
+  },
+  "metadata": {
+    "primaryKey": "ID",
+    "creatorId": "CREATORID",
+    "updaterId": "UPDATERID",
+    "createdAt": "CREATEDAT",
+    "updatedAt": "UPDATEDAT",
+    "timezone": "Europe/Rome",
+    "manageIdColumn": "false"
+  }
+}
