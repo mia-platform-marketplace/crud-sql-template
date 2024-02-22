@@ -4,7 +4,7 @@
 [versions]
 junit-jupiter-engine = "5.10.0"
 kotlinx-coroutines-core = "1.7.3"
-crud-sql-library = "1.0.0"
+crud-sql-library = "0.1.0"
 
 
 [libraries]

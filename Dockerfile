@@ -46,8 +46,6 @@ LABEL maintainer="Mia-platform" \
 ENV JAVA_HOME=/jre-run/custom-jre-17
 ENV LOG_LEVEL=DEBUG
 ENV HTTP_PORT=3000
-ENV API_PORT=3001
-ENV SWAGGER_PORT=5000
 ENV TABLE_DEFINITION_FOLDER=/app/table-schemas
 ENV DB_URL="db-url"
 

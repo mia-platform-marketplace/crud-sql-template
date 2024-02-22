@@ -11,9 +11,7 @@ The following environment variables are used:
 | Environment variable    | Description                                                                                                                                                                                                                                                                                                                                       |
 |-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | USERID_HEADER_KEY       | The name of the header that contains information of the user.                                                                                                                                                                                                                                                                                     | 
-| HTTP_PORT               | The port on which the application server will serve status requests (default 3000).                                                                                                                                                                                                                                                               |
-| API_PORT                | The port on which the application server will serve API requests (default 3001).                                                                                                                                                                                                                                                                  |
-| SWAGGER_PORT            | The port on which the application server will serve swagger requests (default 5000).                                                                                                                                                                                                                                                              |
+| HTTP_PORT               | The port on which the application server will serve API requests (default 3000).                                                                                                                                                                                                                                                               |                                                                                                                                                                                                                                                           |
 | TABLE_DEFINITION_FOLDER | Absolute path of a folder containing the tables JSON schemas.                                                                                                                                                                                                                                                                                     |
 | LOG_LEVEL               | Specifies the log level to use.                                                                                                                                                                                                                                                                                                                   |
 | DB_URL                  | Required. The connection string to connect to the database with username and password. <br/> Accepted formats: <br/> - [sqlserver\|postgresql]://[user[:[password]]@]host[:port][/database][?<key1>=<value1>[&<key2>=<value2>]] <br/> - jdbc:[sqlserver\|postgresql]://[host]:[port];databaseName=[db-name];user=[db-user];password=[db-password] |
@@ -39,12 +37,15 @@ The tables should be included in separate JSON files in the folder defined with 
 An example of configuration can be found in the [Collections Definitions folder](./table-schemas).
 
 #### Metadata fields
-| Name           | Type    | Required | Default value | Description                                                                                                                   |
-|----------------|---------|----------|---------------|-------------------------------------------------------------------------------------------------------------------------------|
-| manageIdColumn | Boolean | &check;  | -             | Boolean flag that specifies if SQL tables use identity columns as identifier for records                              .       |
-| createdAt      | String  | -        | -             | The name of the column you want to use to represent the created at moment - if not set is handled internally by the service.  |
-| updatedAt      | String  | -        | -             | The name of the column you want to use to represent the updated at moment - if not set is handled internally by the service.  |
-| timezone       | String  | -        | -             | The timezone to be used for date type fields. The format to be used is [Time Zone Database](https://www.iana.org/time-zones). |
+| Name           | Type                   | Required | Default value | Description                                                                                                                   |
+|----------------|------------------------|----------|---------------|-------------------------------------------------------------------------------------------------------------------------------|
+| primaryKey     | String / Array[String] | &check;  | -             | Column (or Columns) which identify the primary key of the table                              .                                |
+| manageIdColumn | Boolean                | &check;  | -             | Boolean flag that specifies if SQL tables use identity columns as identifier for records                              .       |
+| creatorId      | String                 | -        | -             | The name of the column you want to use to save the id of the user who created the record.                                     |
+| updaterId      | String                 | -        | -             | The name of the column you want to use to save the id of the user who updated the record.                                     |
+| createdAt      | String                 | -        | -             | The name of the column you want to use to represent the created at moment - if not set is handled internally by the service.  |
+| updatedAt      | String                 | -        | -             | The name of the column you want to use to represent the updated at moment - if not set is handled internally by the service.  |
+| timezone       | String                 | -        | -             | The timezone to be used for date type fields. The format to be used is [Time Zone Database](https://www.iana.org/time-zones). |
 
 # How to integrate with a SQL database
 
@@ -157,7 +158,7 @@ For example this request will create a record in the `books` table:
 
 ```bash
 curl --request POST \
-  --url http://localhost:3001/books \
+  --url http://localhost:3000/books \
   --header 'Content-Type: application/json' \
   --header 'userId: user' \
   --data '{
@@ -170,5 +171,5 @@ curl --request POST \
 This request will retrieve all records from the table:
 
 ```bash
-curl http://localhost:3001/books/
+curl http://localhost:3000/books/
 ```
