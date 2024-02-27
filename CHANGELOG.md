@@ -7,4 +7,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2024-02-27
 This is the initial release of CRUD SQL Template. A brief overview regarding the Template can be found [here](https://docs.mia-platform.eu/docs/runtime_suite_templates/crud-sql-template/overview)
