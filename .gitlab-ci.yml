@@ -2,7 +2,7 @@ include:
   - file: "/build/java/template-java-gradle.yml"
     project: "platform/pipelines-templates"
     ref: "master"
-  - project: 'mia-platform/pipelines-templates'
+  - project: 'platform/pipelines-templates'
     file: '/common/docker-build-branch.yml'
     ref: master
 
