@@ -1,13 +1,135 @@
-include:
-  - file: "/build/java/template-java-gradle.yml"
-    project: "platform/pipelines-templates"
-    ref: "master"
-  - file: "/build/java/template-java-gradle-test-latest.yml"
-    project: "platform/pipelines-templates"
-    ref: "master"
+workflow:
+  rules:
+    - if: $CI_MERGE_REQUEST_IID
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes:
+        - build-logic/**/*
+        - library/src/**/*
+        - library/build.gradle.kts
+        - pipelines/**/*
+        - vendors/mssql/src/**/*
+        - vendors/mssql/build.gradle.kts
+        - vendors/postgresql/src/**/*
+        - vendors/postgresql/build.gradle.kts
+        - vendors/oraclejdbc/src/**/*
+        - vendors/oraclejdbc/build.gradle.kts
+        - .gitlab-ci.yml
+
+stages:
+  - build
+  - sast
+  - test
+  - container-build
+  - package
 
 default:
   image: eclipse-temurin:17.0.10_7-jdk-jammy
 
+services:
+  - name: docker:24-dind
+
 variables:
-  IMAGE_NAME: crud-sql-template
+  GRADLE_USER_HOME: "${CI_PROJECT_DIR}/.gradle"
+  ENABLE_DOCKER_BUILD_IN_MR: "false"
+  DOCKER_HOST: tcp://docker:2376
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_TLS_VERIFY: 1
+  DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+  DOCKER_DRIVER: overlay2
+  MODULE_VERSION: ""
+
+### =================================== ###
+
+# specifically cache gradle wrapper, so that it is recreated only when its version changes
+.wrapper_cache: &wrapper_cache
+  key:
+    files:
+      - gradle/wrapper/gradle-wrapper.properties
+    prefix: $CI_COMMIT_REF_SLUG
+  paths:
+    - .gradle
+  policy: pull
+  unprotect: true
+
+# cache build logic across jobs, so that they do not need to rebuild it
+.build_logic_cache: &build_logic_cache
+  key: $CI_COMMIT_REF_SLUG
+  paths:
+    - build-logic/.gradle
+    - build-logic/build
+  policy: pull
+  unprotect: true
+
+### =================================== ###
+
+lint-app:
+  stage: sast
+  needs:
+    - build-gradle
+
+  script:
+    - ./gradlew detekt
+
+### =================================== ###
+
+test:
+  stage: test
+  needs:
+    - build-gradle
+  retry:
+    max: 1
+    when:
+      - script_failure
+      - runner_system_failure
+
+  rules:
+    - if: '$CI_COMMIT_TAG != null'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      changes:
+        - library/**/*
+
+  before_script:
+    - echo "${PRIVATE_MAVEN_REGISTRY_PROPERTIES}" > "${GRADLE_USER_HOME}/gradle.properties"
+
+  script: ./gradlew koverVerify
+
+  coverage: '/application line coverage.*?([0-9]{1,2}\.[0-9]{1,4})%/'
+
+### =================================== ###
+
+.publish-lib:
+  stage: package
+
+  cache:
+    - key:
+        files:
+          - gradle/wrapper/gradle-wrapper.properties
+      paths:
+        - .gradle/buildOutputCleanup
+        - .gradle/caches
+        - .gradle/native
+        - .gradle/wrapper
+        - .gradle
+      policy: pull
+
+# latest
+publish-snapshot:
+  extends: .publish-lib
+
+  script:
+    - ./gradlew assemble
+    - ./gradlew publish -PisLatest=true
+
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+
+# tag
+publish-release:
+  extends: .publish-lib
+
+  script:
+    - ./gradlew assemble
+    - ./gradlew publish
