@@ -23,8 +23,8 @@ if (propertiesFile.exists()) {
     properties.load(propertiesFile.inputStream())
 }
 
-val nexusUsername: String = if(propertiesFile.exists())  properties.getProperty("NEXUS_USERNAME") else System.getenv("MAVEN_NEXUS_USER_MIA")
-val nexusPassword: String = if (propertiesFile.exists()) properties.getProperty("NEXUS_PASSWORD") else System.getenv("MAVEN_NEXUS_TOKEN_MIA")
+val nexusUsername: String = if(propertiesFile.exists())  properties.getProperty("NEXUS_USERNAME") else System.getenv("REGISTRY_USER")
+val nexusPassword: String = if (propertiesFile.exists()) properties.getProperty("NEXUS_PASSWORD") else System.getenv("REGISTRY_PASSWORD")
 
 repositories {
     // Use Maven Central for resolving dependencies.
