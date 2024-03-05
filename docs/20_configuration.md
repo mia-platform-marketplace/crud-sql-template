@@ -1,5 +1,5 @@
 # Configuration
-Due to licensing [CRUD SQL service](../../runtime_suite/crud-sql/10_Overview.md) requires packaging with third-party software, unless your datasources are PostgreSQL or MSSQL databases whose support is already included in the docker image of the plugins.
+Due to licensing [CRUD SQL service](../../runtime_suite/crud-postgresql/overview) requires packaging with third-party software, unless your DataSource are PostgreSQL or MSSQL databases whose support is already included in the docker image of the plugins.
 
 ## Service Configuration
 The CRUD SQL needs some environment variables, and a configurations file to work.
@@ -14,7 +14,7 @@ Below you can find all the environment variables that you can edit.
 | HTTP_PORT               | Int    | -        | 3000          | The port on which the application server will serve status requests (default 3000).                                                                                                                                                                                                                                                               |
 | TABLE_DEFINITION_FOLDER | String | &check;  | -             | Absolute path of a folder containing the tables JSON schemas.                                                                                                                                                                                                                                                                                     |
 | LOG_LEVEL               | String | &check;  | -             | Specifies the log level to use.                                                                                                                                                                                                                                                                                                                   |
-| DB_URL                  | String | &check;  | -             | Required. The connection string to connect to the database with username and password. <br/> Accepted formats: <br/> - [sqlserver\|postgresql]://[user[:[password]]@]host[:port][/database][?<key1>=<value1>[&<key2>=<value2>]] <br/> - jdbc:[sqlserver\|postgresql]://[host]:[port];databaseName=[db-name];user=[db-user];password=[db-password] |
+| DB_URL                  | String | &check;  | -             | Required. The connection string to connect to the database with username and password. <br/\> Accepted formats: <br/\> - [sqlserver\|postgresql]://[user[:[password]]@]host[:port][/database][?<key1\>=<value1\>[&<key2\>=<value2\>]] <br/\> - jdbc:[sqlserver\|postgresql]://[host]:[port];databaseName=[db-name];user=[db-user];password=[db-password] |
 
 ### Tables configuration
 The tables should be included in separate JSON files in the folder defined with the environment variable `TABLE_DEFINITION_FOLDER`. Each tables object requires the following fields:
@@ -25,11 +25,11 @@ The tables should be included in separate JSON files in the folder defined with 
 | id               | String             | -        | -             | Additional identifier that can be associated to the collection definition.                                                                                                                                      |
 | name             | String             | &check;  | -             | The name of the table.                                                                                                                                                                                          |
 | endpointBasePath | String             | &check;  | -             | The endpoint path, used as entry point to CRUD operations.                                                                                                                                                      |
-| schema           | JSONSchemaStandard | &check;  | -             | The JSON Schema configuration of the fields to be included in the collection object. A complete description of its fields can be found in the [ _schema_](#table-configuration-json-schema) section.            |
+| schema           | JSONSchemaStandard | &check;  | -             | The JSON Schema configuration of the fields to be included in the collection object.            |
 | metadata         | Object             | &check;  | -             | Object that contains service support metadata to handle standard fields such as updatedAt or updaterId. |
 
 :::info
-For a more in-depth description of the configuration, you can refer to the [plugin configuration](../../runtime_suite/crud-sql/20_Configuration.md).
+For a more in-depth description of the configuration, you can refer to the [plugin configuration](../../runtime_suite/crud-postgresql/configuration).
 :::
 
 ## Template Setup
@@ -64,7 +64,7 @@ To install the dependency you can build the project in your IDE or run the follo
 
 ### Update App file
 
-Now you can modify the `App.kt` file in the `app/src/main/kotlin/eu/miaplatform/template/sqlcrud/` folder.
+Now you can modify the `App.kt` file in the `app/src/main/kotlin/eu/miaplatform/template/crud/` folder.
 
 You have to provide to the `Server().start()` function a parameter that is the DataSource configured to connect to your database.
 
