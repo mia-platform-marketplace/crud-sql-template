@@ -18,13 +18,15 @@ plugins {
 }
 
 val properties = Properties()
-val propertiesFile = project.rootProject.file("gradle-local.properties")
-if (propertiesFile.exists()) {
-    properties.load(propertiesFile.inputStream())
+val ciPropertiesFile = file("${System.getenv("GRADLE_USER_HOME")}/gradle.properties")
+if (ciPropertiesFile.exists()) {
+    properties.load(ciPropertiesFile.inputStream())
+} else {
+    properties.load(project.rootProject.file("gradle-local.properties").inputStream())
 }
 
-val nexusUsername: String = if(propertiesFile.exists())  properties.getProperty("NEXUS_USERNAME") else System.getenv("REGISTRY_USER")
-val nexusPassword: String = if (propertiesFile.exists()) properties.getProperty("NEXUS_PASSWORD") else System.getenv("REGISTRY_PASSWORD")
+val nexusUsername: String = properties.getProperty("nexusUsername")
+val nexusPassword: String = properties.getProperty("nexusPassword")
 
 repositories {
     // Use Maven Central for resolving dependencies.
